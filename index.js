@@ -13,16 +13,7 @@ console.log(`✔ Mode: ${mode}`);
 
 // running server
 const app = require('./config/app')
+const indexHelpers = require('./index.helper')
 app.listen(port)
-  .on('listening', () => serverSuccess())
-  .on('error', (error) => serverError(error))
-
-function serverSuccess() {
-  console.log('✔ Application Started')
-}
-
-function serverError(error) {
-  console.log('✘ Application failed to start');
-  console.error('✘', err.message);
-  process.exit(0);
-}
+  .on('listening', () => indexHelpers.serverSuccess())
+  .on('error', (error) => indexHelpers.serverError(error))
