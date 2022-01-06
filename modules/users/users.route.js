@@ -1,17 +1,8 @@
-var express = require('express')
-var router = express.Router()
-
-// middleware that is specific to this router
-router.use(function timeLog (req, res, next) {
-  console.log('Users route invoked')
-  next()
-})
+const express = require('express')
+const router = express.Router()
+const usersController = require('./users.controller')
 
 // get all users
-router.get('/', function (req, res) {
-  res.send({
-      message: "getting all users"
-  })
-})
+router.post('/', usersController.validateUserInputs, usersController.registerUser)
 
 module.exports = router
