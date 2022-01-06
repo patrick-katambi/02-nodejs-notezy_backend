@@ -1,22 +1,28 @@
-const express = require('express')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const mongoose = require('mongoose')
-const uri = process.env.MONGO_CONNECTION
-mongoose.connect(uri, { useNewUrlParser: true }).then(() => {
-    console.log('connected successfully')
-}).catch(error => console.log(error))
+// initializing the connection to Mongo DB Atlas
+require('./config/database')
 
-const users = require('./routes/users.route')
-const main = require('./routes/main.route')
-const app = express()
+// server configuration variables
+const config = require('./config/config')()
+const port = config.PORT
+const mode = config.MODE
+console.log(`✔ Port: ${port}`);
+console.log(`✔ Mode: ${mode}`);
 
-const port = process.env.SERVER_PORT || 3000
+// running server
+const app = require('./config/app')
+app.listen(port)
+  .on('listening', () => serverSuccess())
+  .on('error', (error) => serverError(error))
 
-app.use('/', main)
-app.use('/users', users)
+function serverSuccess() {
+  console.log('✔ Application Started')
+}
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+function serverError(error) {
+  console.log('✘ Application failed to start');
+  console.error('✘', err.message);
+  process.exit(0);
+}
