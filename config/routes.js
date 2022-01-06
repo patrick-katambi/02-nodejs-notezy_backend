@@ -1,9 +1,9 @@
-const mainRoute = require('../routes/main.route')
-const usersRoute = require('../routes/users.route')
+const mainRoute = require('../modules/main/main.route')
+const usersRoute = require('../modules/users/users.route')
 
 function setupRoutes (app) {
-    app.use('/', mainRoute);
-    app.use('/users', usersRoute);
+    app.use('/api/v1/', mainRoute);
+    app.use('/api/v1/users', usersRoute);
 
     app.use('/*', (req, res) => {
         const error = 'Requested route does not exist.';
