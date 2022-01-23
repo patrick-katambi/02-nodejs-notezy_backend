@@ -6,7 +6,6 @@ const registerSchema = Joi.object({
     password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     repeatPassword: Joi.ref('password'),
 })
-    .with('username', 'email')
     .with('password', 'repeatPassword')
 
 const loginSchema = Joi.object({
