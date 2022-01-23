@@ -2,6 +2,8 @@ const Joi = require("joi");
 const User = require("./users.model");
 const usersSchema = require("./users.validation");
 
+const bcrypt = require("bcrypt");
+
 class UsersController {
   validateUserInputs(req, res, next) {
     const validation = usersSchema.registerSchema.validate(req.body);
@@ -22,20 +24,25 @@ class UsersController {
   }
 
   async registerUser(req, res) {
+    // hashing the password password
+    const saltRounds = 10;
+    const hashedPassword = bcrypt.hashSync(req.body.password, saltRounds);
+
     // registering to mongodb
     const user = new User({
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password,
-      repeatPassword: req.body.repeatPassword,
+      password: hashedPassword,
+      repeatPassword: hashedPassword,
     });
 
     try {
       await user.save().then((savedDoc) => {
+        const { _id, username, email, date } = savedDoc;
         return res.send({
           message: "Success",
           details: "Successfully registered the user",
-          data: savedDoc,
+          data: { _id, username, email, date },
           error: null,
         });
       });
