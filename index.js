@@ -13,7 +13,7 @@ console.log(`✔ Mode: ${mode}`);
 
 // running server
 const app = require('./config/app')
-app.get('/', (req, res) => res.send("You are at the root route"))
+
 const indexHelpers = require('./index.helper')
 app.listen(port)
   .on('listening', () => indexHelpers.serverSuccess())

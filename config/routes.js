@@ -2,6 +2,7 @@ const mainRoute = require('../modules/main/main.route')
 const usersRoute = require('../modules/users/users.route')
 
 function setupRoutes (app) {
+    app.get('/', (req, res) => res.send("You are at the root route"))
     app.use('/api/v1/', mainRoute);
     app.use('/api/v1/users', usersRoute);
 
