@@ -1,8 +1,16 @@
 const Joi = require("joi");
 const User = require("./users.model");
 const usersSchema = require("./users.validation");
-
 const bcrypt = require("bcrypt");
+const axios = require("axios");
+const https = require("https");
+var btoa = require("btoa");
+
+const api_key = "06026359699ee2d1";
+const secret_key =
+  "YzQzNzAwNzE3ZWYyZmUwOGNkNmI2NTc3ZmFjNjJhOTNjODA2Y2NjNmQ5MmM0MzMxMzVkNTVkYTg0NTZjZjE4Mw==";
+const content_type = "application/json";
+const source_addr = "INFO";
 
 class UsersController {
   validateUserInputs(req, res, next) {
@@ -32,12 +40,16 @@ class UsersController {
     const user = new User({
       username: req.body.username,
       email: req.body.email,
+      phoneNumber: req.body.phoneNumber,
       password: hashedPassword,
       repeatPassword: hashedPassword,
     });
 
     try {
       await user.save().then((savedDoc) => {
+        // sending one-time-password sms
+        send_sms(req.body.phoneNumber);
+
         const { _id, username, email, date } = savedDoc;
         return res.send({
           message: "Success",
@@ -64,3 +76,35 @@ class UsersController {
 }
 
 module.exports = new UsersController();
+
+function send_sms(phoneNumber) {
+  const randomNumber = getRandomInt(10001, 99999);
+  axios
+    .post(
+      "https://apisms.beem.africa/v1/send",
+      {
+        source_addr: source_addr,
+        schedule_time: "",
+        encoding: 0,
+        message: `[ Notezy ] your verification code is ${randomNumber}. Do not share this code with anyone.`,
+        recipients: [{ recipient_id: 1, dest_addr: phoneNumber }],
+      },
+      {
+        headers: {
+          "Content-Type": content_type,
+          Authorization: "Basic " + btoa(api_key + ":" + secret_key),
+        },
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false,
+        }),
+      }
+    )
+    .then((response) => console.log(response, api_key + ":" + secret_key))
+    .catch((error) => console.error(error.response.data));
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
