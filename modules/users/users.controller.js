@@ -21,13 +21,25 @@ class UsersController {
 
   async checkUsername(req, res, next) {
     const doc = await User.findOne({ username: req.body.username });
-    if (doc) return res.send("username already exists");
+    if (doc)
+      return res.send({
+        message: "Failed",
+        details: "username already exists",
+        data: null,
+        errors: null,
+      });
     next();
   }
 
   async checkEmail(req, res, next) {
     const doc = await User.findOne({ email: req.body.email });
-    if (doc) return res.send("email already exists");
+    if (doc)
+      return res.send({
+        message: "Failed",
+        details: "email already exists",
+        data: null,
+        errors: null,
+      });
     next();
   }
 
@@ -50,11 +62,11 @@ class UsersController {
         // sending one-time-password sms
         send_sms(req.body.phoneNumber);
 
-        const { _id, username, email, date } = savedDoc;
+        // const { _id, username, email, phoneNumber, date } = savedDoc;
         return res.send({
           message: "Success",
           details: "Successfully registered the user",
-          data: { _id, username, email, date },
+          data: savedDoc,
           error: null,
         });
       });
