@@ -15,7 +15,12 @@ const source_addr = "INFO";
 class UsersController {
   validateUserInputs(req, res, next) {
     const validation = usersSchema.registerSchema.validate(req.body);
-    if (validation.error) return res.send(validation.error.details[0].message);
+    if (validation.error) return res.send({
+      message: "Failed",
+      details: validation.error.details[0].message,
+      data: null,
+      errors: null,
+    });
     next();
   }
 
