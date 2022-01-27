@@ -65,7 +65,7 @@ class UsersController {
         // const { _id, username, email, phoneNumber, date } = savedDoc;
         return res.send({
           message: "Success",
-          details: "Successfully registered the user",
+          details: "Registration successful",
           data: savedDoc,
           error: null,
         });
@@ -73,7 +73,7 @@ class UsersController {
     } catch (error) {
       res.status(400).send({
         message: "Failed",
-        details: "User already exists",
+        details: "Cannot register user",
         data: null,
         error: error,
       });
